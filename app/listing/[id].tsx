@@ -4,7 +4,6 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function ListingDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  console.log("🚀 ~ ListingDetails ~ id:", id);
 
   return (
     <View>
