@@ -91,9 +91,10 @@ function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.navigate("/(modals)/login");
-    }
+    // TODO: uncomment this to bring back authentication
+    // if (isLoaded && !isSignedIn) {
+    //   router.navigate("/(modals)/login");
+    // }
   }, [isLoaded]);
 
   return (
