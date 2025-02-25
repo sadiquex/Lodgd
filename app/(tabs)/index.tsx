@@ -1,25 +1,16 @@
 import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, Stack } from "expo-router";
 import ExploreHeader from "@/components/explore-header";
 import Listings from "@/components/listings";
-// import axios from "axios";
+import listingsData from "@/assets/data/airbnb-listings.json";
 
 export default function Homepage() {
   const [category, setCategory] = useState("Tiny homes");
-  const [listings, setListings] = useState([]);
+  // when the component is initialized, memoize the data - Performance
+  const items = useMemo(() => listingsData as any, []);
 
   // make the api call here
-  // const getListings = () => {
-  //   const data = axios.get(
-  //     `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/air-bnb-listings/records?limit=20`
-  //   );
-  //   console.log("🚀 ~ getListings ~ data:", data);
-  // };
-
-  // useEffect(() => {
-  //   // getListings();
-  // }, []);
 
   const onDataChanged = (category: string) => {
     // console.log("🚀 ~ onDataChanged ~ category:", category);
@@ -27,13 +18,13 @@ export default function Homepage() {
   };
 
   return (
-    <View style={{ flex: 1, marginTop: 80 }}>
+    <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
-      <Listings listings={[]} category={category} />
+      <Listings listings={items} category={category} />
     </View>
   );
 }

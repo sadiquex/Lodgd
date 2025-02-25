@@ -122,6 +122,12 @@ function RootLayoutNav() {
         name="listing/[id]"
         options={{
           headerTitle: "",
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={28} />
+            </TouchableOpacity>
+          ),
         }}
       />
 
