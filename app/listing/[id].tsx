@@ -5,9 +5,10 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  Share,
 } from "react-native";
-import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import React, { useLayoutEffect } from "react";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import listingsData from "@/assets/data/airbnb-listings.json";
 import { ListingInterface } from "@/interfaces/listings";
 import Animated, {
@@ -24,6 +25,7 @@ import { defaultStyles } from "@/constants/Styles";
 const IMG_HEIGHT = 300;
 
 export default function ListingDetails() {
+  const navigation = useNavigation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const listing = (listingsData as ListingInterface[]).find(
     (listing) => listing.id === id
@@ -31,6 +33,49 @@ export default function ListingDetails() {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
   const scrollOffset = useScrollViewOffset(scrollRef);
+
+  const shareListing = async () => {
+    try {
+      await Share.share({
+        title: listing?.name,
+        url: listing ? listing.listing_url : "",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerTransparent: true,
+
+      // background for the header when we scroll down
+      headerBackground: () => (
+        <Animated.View
+          style={[headerAnimatedStyle, styles.header]}
+        ></Animated.View>
+      ),
+      headerRight: () => (
+        <View style={styles.bar}>
+          <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
+            <Ionicons name="share-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.roundButton}>
+            <Ionicons name="heart-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity
+          style={styles.roundButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="chevron-back" size={24} color={"#000"} />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
 
   // image parallax scrolling styles
   const imageAnimatedStyle = useAnimatedStyle(() => {
@@ -57,11 +102,17 @@ export default function ListingDetails() {
   });
 
   /*
-  How it works
+  How the image parallax works
   - When scrolling up (scrollOffset.value is -IMG_HEIGHT), the image moves halfway up (-IMG_HEIGHT / 2).
   - When at rest (scrollOffset.value = 0), the image stays in place (0).
   - When scrolling down (scrollOffset.value = IMG_HEIGHT), the image moves further down (IMG_HEIGHT * 0.75).
 */
+
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
