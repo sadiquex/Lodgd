@@ -12,4 +12,4 @@
   `npx expo install expo-haptics`
   `Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);` - use this line of code for haptic feedback
 
-- Continue at 2:38
+- Continue at 2:38.
